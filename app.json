@@ -1,0 +1,43 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/webview/webview"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#3FA796",
+    "navigationBarTitleText": "营地主题音乐会",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f0fff4"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#3FA796",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home-active.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/webview/webview",
+        "iconPath": "images/concert.png",
+        "selectedIconPath": "images/concert-active.png",
+        "text": "音乐会"
+      }
+    ]
+  },
+  "networkTimeout": {
+    "request": 10000,
+    "downloadFile": 10000
+  },
+  "debug": false,
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于显示音乐会地点信息"
+    }
+  }
+}

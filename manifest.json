@@ -1,0 +1,25 @@
+{
+  "name": "营地主题音乐会",
+  "short_name": "营地音乐会",
+  "description": "艾音艺术教育营地主题音乐会电子节目单",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#f0fff4",
+  "theme_color": "#3FA796",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "images/home.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    }
+  ],
+  "categories": [
+    "music",
+    "entertainment",
+    "education"
+  ]
+}

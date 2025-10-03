@@ -1,0 +1,132 @@
+/* pages/index/index.wxss */
+.container {
+  padding: 40rpx;
+  background: linear-gradient(135deg, #f0fff4 0%, #e6f7ff 100%);
+  min-height: 100vh;
+}
+
+/* 头部区域 */
+.header {
+  text-align: center;
+  margin-bottom: 60rpx;
+}
+
+.logo {
+  font-size: 120rpx;
+  margin-bottom: 20rpx;
+}
+
+.title {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #3FA796;
+  margin-bottom: 10rpx;
+}
+
+.subtitle {
+  font-size: 32rpx;
+  color: #666;
+}
+
+/* 音乐会信息 */
+.concert-info {
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-bottom: 40rpx;
+  box-shadow: 0 10rpx 30rpx rgba(63, 167, 150, 0.1);
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.info-item:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  font-size: 32rpx;
+  color: #3FA796;
+  width: 120rpx;
+  flex-shrink: 0;
+}
+
+.info-value {
+  font-size: 32rpx;
+  color: #333;
+  flex: 1;
+}
+
+/* 功能按钮 */
+.actions {
+  margin-bottom: 60rpx;
+}
+
+.action-btn {
+  width: 100%;
+  height: 100rpx;
+  border-radius: 50rpx;
+  font-size: 32rpx;
+  margin-bottom: 20rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn.primary {
+  background: #3FA796;
+  color: white;
+}
+
+.action-btn:not(.primary) {
+  background: white;
+  color: #3FA796;
+  border: 2rpx solid #3FA796;
+}
+
+.action-btn:last-child {
+  margin-bottom: 0;
+}
+
+/* 特色介绍 */
+.features {
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  box-shadow: 0 10rpx 30rpx rgba(63, 167, 150, 0.1);
+}
+
+.feature-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #3FA796;
+  margin-bottom: 30rpx;
+  text-align: center;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.feature-item:last-child {
+  margin-bottom: 0;
+}
+
+.feature-icon {
+  font-size: 40rpx;
+  width: 80rpx;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.feature-text {
+  font-size: 30rpx;
+  color: #666;
+  flex: 1;
+}

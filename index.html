@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>营地主题音乐会</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#3FA796">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="营地音乐会">
+    <link rel="apple-touch-icon" href="/icons/icon-152x152.png">
+    
+    <!-- PWA iOS兼容 -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-TileColor" content="#3FA796">
+    <meta name="msapplication-tap-highlight" content="no">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        .text-grass-green { color: #3FA796; }
+        .bg-grass-green { background-color: #3FA796; }
+        .border-grass-green { border-color: #3FA796; }
+        .text-lake-blue { color: #8FD6D0; }
+        .bg-lake-blue { background-color: #8FD6D0; }
+        .border-lake-blue { border-color: #8FD6D0; }
+        
+        /* 新增色彩主题 */
+        .text-warm-orange { color: #FF8A50; }
+        .bg-warm-orange { background-color: #FF8A50; }
+        .text-soft-purple { color: #A78BFA; }
+        .bg-soft-purple { background-color: #A78BFA; }
+        .text-coral-pink { color: #FF6B9D; }
+        .bg-coral-pink { background-color: #FF6B9D; }
+        .text-golden-yellow { color: #FFC947; }
+        .bg-golden-yellow { background-color: #FFC947; }
+        .active-filter {
+            background-color: #3FA796;
+            color: white;
+            font-weight: 500;
+        }
+        .inactive-filter {
+            background-color: #E9ECEF;
+            color: #495057;
+        }
+        .program-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .program-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 640px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        #music-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(63, 167, 150, 0.8);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        
+        #music-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+        }
+        
+        /* 增强背景层次感 */
+        body {
+            background: linear-gradient(135deg, #f0fff4 0%, #e8f5f0 30%, #d0f0c0 60%, #3FA796 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 动态背景装饰 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(63,167,150,0.1) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+        
+        /* 音乐提示文字 */
+        .music-hint {
+            position: fixed;
+            bottom: 80px;
+            right: 10px;
+            background: rgba(63, 167, 150, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            display: none;
+            z-index: 999;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.8; transform: scale(1); }
+        }
+        
+        /* 紧凑布局优化 */
+        .container { 
+            max-width: 4xl; 
+            padding: 1rem 1rem; 
+        }
+        
+        section { 
+            margin-bottom: 1.5rem !important; 
+        }
+        
+        .section-content { 
+            padding: 1.5rem !important; 
+        }
+        
+        /* 优化动效 - 消除闪屏 */
+        .animate-fade-in { 
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease-out forwards; 
+        }
+        
+        .animate-bounce-in { 
+            opacity: 0;
+            transform: scale(0.95);
+            animation: smoothBounceIn 0.8s ease-out forwards; 
+        }
+        
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes smoothBounceIn {
+            0% { opacity: 0; transform: scale(0.95); }
+            60% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        /* 延迟动画开始 */
+        .animate-delay-1 { animation-delay: 0.1s; }
+        .animate-delay-2 { animation-delay: 0.2s; }
+        .animate-delay-3 { animation-delay: 0.3s; }
+        .animate-delay-4 { animation-delay: 0.4s; }
+        
+        /* 元素悬停增强 */
+        .section-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(63,167,150,0.15);
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            .container { padding: 0.5rem 1rem; }
+            h1 { font-size: 1.8rem !important; }
+            #countdown { font-size: 1.3rem !important; }
+            .chart-container { height: 220px; }
+            .section-content { padding: 1rem !important; }
+            section { margin-bottom: 1rem !important; }
+            #music-toggle { 
+                width: 45px; 
+                height: 45px; 
+                bottom: 15px; 
+                right: 15px; 
+            }
+            .music-hint { 
+                bottom: 70px; 
+                right: 5px; 
+                font-size: 11px; 
+                padding: 6px 10px; 
+            }
+        }
+        
+        /* 节目卡片增强效果 */
+        .program-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .program-card:hover {
+            border-left-color: #3FA796;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        /* 筛选按钮增强 */
+        .filter-btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .filter-btn:before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+        
+        .filter-btn:hover:before {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="bg-green-50 text-gray-800">
+    
+    <audio id="bg-music" loop preload="metadata">
+        <!-- 久石让钢琴曲 - 菊次郎的夏天风格 -->
+        <source src="https://cdn.pixabay.com/download/audio/2022/08/04/audio_2dde6b7562.mp3?filename=piano-moment-4.mp3" type="audio/mpeg">
+        <!-- 备用久石让风格钢琴曲 -->
+        <source src="https://www.bensound.com/bensound-music/bensound-pianomoment.mp3" type="audio/mpeg">
+        <source src="https://www.bensound.com/bensound-music/bensound-memories.mp3" type="audio/mpeg">
+        <!-- 最终备用轻音乐 -->
+        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- 添加备用Web Audio API音频生成 -->
+    <script>
+        // 创建久石让风格的简单旋律
+        function createSummerMelody() {
+            if (typeof AudioContext !== 'undefined' || typeof webkitAudioContext !== 'undefined') {
+                const context = new (window.AudioContext || window.webkitAudioContext)();
+                const notes = [523.25, 587.33, 659.25, 698.46, 783.99, 880.00]; // C5-A5
+                let currentTime = context.currentTime;
+                
+                notes.forEach((freq, index) => {
+                    const oscillator = context.createOscillator();
+                    const gainNode = context.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(context.destination);
+                    
+                    oscillator.frequency.setValueAtTime(freq, currentTime);
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0, currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.1, currentTime + 0.1);
+                    gainNode.gain.linearRampToValueAtTime(0, currentTime + 0.8);
+                    
+                    oscillator.start(currentTime);
+                    oscillator.stop(currentTime + 0.8);
+                    
+                    currentTime += 0.5;
+                });
+                
+                return true;
+            }
+            return false;
+        }
+        
+        window.createSummerMelody = createSummerMelody;
+        
+        // PWA Service Worker 注册
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+        
+        // PWA安装提示
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('PWA安装提示');
+            e.preventDefault();
+            deferredPrompt = e;
+            // 可以在这里显示自定义安装按钮
+            showInstallButton();
+        });
+        
+        function showInstallButton() {
+            // 创建安装按钮
+            const installBtn = document.createElement('button');
+            installBtn.textContent = '📱 安装到桌面';
+            installBtn.className = 'fixed bottom-20 left-4 bg-grass-green text-white px-4 py-2 rounded-lg shadow-lg text-sm z-1000';
+            installBtn.onclick = () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        console.log('用户选择:', choiceResult.outcome);
+                        deferredPrompt = null;
+                        document.body.removeChild(installBtn);
+                    });
+                }
+            };
+            document.body.appendChild(installBtn);
+            
+            // 5秒后自动隐藏
+            setTimeout(() => {
+                if (document.body.contains(installBtn)) {
+                    document.body.removeChild(installBtn);
+                }
+            }, 10000);
+        }
+    </script>
+    <div id="music-toggle">
+        <span id="music-icon">🎵</span>
+    </div>
+    <div class="music-hint" id="music-hint">🎵 营地音乐会背景音乐</div>
+
+    <div class="container mx-auto max-w-4xl">
+
+        <header class="section-card animate-bounce-in text-center section-content bg-white rounded-xl shadow-lg mb-6" style="background: linear-gradient(135deg, #F0FFF4 0%, #E8F5F0 50%, #3FA796 100%); background-size: cover; background-position: center;">
+            <div class="bg-white/80 backdrop-blur-sm p-4 rounded-lg">
+                <h1 class="text-4xl md:text-5xl font-bold text-grass-green mb-2">🎶 营地主题音乐会</h1>
+                <p class="text-lg text-gray-600">一场简约几何与色彩的交响</p>
+                <div id="countdown" class="text-2xl md:text-3xl font-bold text-gray-700 mt-6 space-x-2">
+                    <span><span id="days">00</span>天</span>
+                    <span><span id="hours">00</span>时</span>
+                    <span><span id="minutes">00</span>分</span>
+                    <span><span id="seconds">00</span>秒</span>
+                </div>
+                <p class="mt-2 text-sm text-gray-500">距离音乐会开始</p>
+            </div>
+        </header>
+
+
+        <section id="intro" class="section-card animate-fade-in animate-delay-1 bg-white rounded-xl shadow-lg section-content mb-6">
+            <h2 class="text-xl font-bold text-center mb-3 text-grass-green">艾音艺术教育：陪伴每一颗音乐种子发芽</h2>
+            <div class="text-gray-700 space-y-3 text-left max-w-3xl mx-auto leading-relaxed text-sm">
+                <p>每一个孩子心中，都有一颗等待发芽的音乐种子。自2010年起，艾音艺术教育便以“爱”与“专业”为土壤，在这片园地里耕耘了十五年。</p>
+                <p>我们深知，好的老师是孩子最好的引路人。因此，我们坚持聘用拥有5年以上的一线经验的资深教师，他们懂得如何倾听、如何引导，用精准高效的教学方法，守护并激发孩子与生俱来的天赋。</p>
+                <p>从钢琴的黑白键，到声乐的悠扬，再到古筝的古典韵味，我们见证了无数孩子从零基础到自信地站上市、省乃至全国的舞台。这些荣誉不仅是技巧的证明，更是他们成长路上闪亮的勋章。</p>
+                <p>在艾音，我们与您一同期待，孩子奏响属于自己的华美乐章。</p>
+            </div>
+        </section>
+
+        <section id="analysis" class="section-card animate-fade-in animate-delay-2 bg-white rounded-xl shadow-lg section-content mb-6">
+             <h2 class="text-xl font-bold text-center mb-4 text-grass-green">节目速览</h2>
+             <p class="text-center text-gray-600 max-w-2xl mx-auto mb-6 text-sm">
+                本次音乐会汇集了多种多样的表演形式。通过下面的图表和统计数据，您可以快速了解整场音乐会的节目构成。
+             </p>
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                 <div class="w-full">
+                     <div class="chart-container">
+                         <canvas id="programChart"></canvas>
+                     </div>
+                 </div>
+                 <div class="grid grid-cols-2 gap-4 text-center">
+                     <div class="bg-gray-100 p-4 rounded-lg">
+                         <p class="text-3xl font-bold text-grass-green" id="total-programs">0</p>
+                         <p class="text-gray-600">总节目数</p>
+                     </div>
+                     <div class="bg-gray-100 p-4 rounded-lg">
+                        <p class="text-3xl font-bold text-grass-green" id="total-performers">0</p>
+                        <p class="text-gray-600">表演人数</p>
+                    </div>
+                     <div class="bg-gray-100 p-4 rounded-lg">
+                         <p class="text-3xl font-bold text-grass-green" id="piano-count">0</p>
+                         <p class="text-gray-600">器乐</p>
+                     </div>
+                     <div class="bg-gray-100 p-4 rounded-lg">
+                         <p class="text-3xl font-bold text-grass-green" id="vocal-count">0</p>
+                         <p class="text-gray-600">声乐</p>
+                     </div>
+                 </div>
+             </div>
+        </section>
+
+        <section id="program" class="section-card animate-fade-in animate-delay-3 bg-white rounded-xl shadow-lg section-content mb-6">
+            <h2 class="text-xl font-bold text-center mb-3 text-grass-green">🌿 详细节目单</h2>
+            <p class="text-center text-gray-600 max-w-2xl mx-auto mb-4 text-sm">
+                在这里，您可以浏览完整的音乐会节目列表。我们提供了便捷的筛选功能，点击下方按钮，即可查看特定类型的表演。
+            </p>
+            <div id="filters" class="flex flex-wrap justify-center gap-2 mb-6">
+                <button class="filter-btn active-filter px-4 py-2 rounded-full text-sm font-medium transition" data-filter="all">全部</button>
+                <button class="filter-btn inactive-filter px-4 py-2 rounded-full text-sm font-medium transition" data-filter="钢琴">钢琴独奏</button>
+                <button class="filter-btn inactive-filter px-4 py-2 rounded-full text-sm font-medium transition" data-filter="声乐">声乐独唱</button>
+                <button class="filter-btn inactive-filter px-4 py-2 rounded-full text-sm font-medium transition" data-filter="合唱">小组唱</button>
+                <button class="filter-btn inactive-filter px-4 py-2 rounded-full text-sm font-medium transition" data-filter="器乐">其他乐器</button>
+            </div>
+
+            <div id="program-list" class="space-y-4">
+            </div>
+        </section>
+
+        <section id="details" class="section-card animate-fade-in animate-delay-4 bg-white rounded-xl shadow-lg section-content mb-6">
+            <h2 class="text-xl font-bold text-center mb-4 text-grass-green">🎪 活动信息</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div class="bg-green-50 p-4 rounded-lg transform hover:scale-105 transition-transform duration-300">
+                    <div class="text-4xl mb-2">🗓️</div>
+                    <h3 class="font-semibold text-lg">时间</h3>
+                    <p class="text-gray-600">2025年10月8日 (周三) 16:30</p>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-lg transform hover:scale-105 transition-transform duration-300">
+                    <div class="text-4xl mb-2">📍</div>
+                    <h3 class="font-semibold text-lg">地点</h3>
+                    <p class="text-gray-600">屿众营地·木屋</p>
+                    <p class="text-sm text-gray-500">漳州市龙文区蓝田街道江滨东路11号</p>
+                </div>
+                <div class="bg-yellow-50 p-4 rounded-lg transform hover:scale-105 transition-transform duration-300">
+                    <div class="text-4xl mb-2">🌟</div>
+                    <h3 class="font-semibold text-lg">主办方</h3>
+                    <p class="text-gray-600">艾音艺术教育</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="section-card animate-fade-in text-center mt-6 section-content bg-grass-green text-white rounded-xl shadow-lg">
+            <h3 class="text-xl font-bold">📲 联系我们</h3>
+            <p class="mt-2">主办方：艾音艺术教育</p>
+            <p class="mt-1">联系人：邓老师</p>
+            <a href="tel:17365166266" class="mt-2 inline-block bg-white text-grass-green font-semibold px-4 py-2 rounded-lg hover:bg-gray-100 transition">17365166266</a>
+            <p class="mt-4 text-sm opacity-80">（扫码添加微信了解详情👇）</p>
+            <div class="w-40 h-40 bg-white mx-auto mt-3 rounded-lg p-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                <img src="https://cdn.yourdomain.com/qrcode/aiyin-wechat-qr.jpg" 
+                     alt="艾音艺术教育微信二维码" 
+                     class="w-full h-full object-contain rounded-md" 
+                     loading="lazy"
+                     onerror="this.src='./2025-10-02 18.03.32.jpg'">
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const programData = [
+            { id: 1, performer: '合唱团员', type: '合唱', title: '《最亮的星星》', instrument: '独唱' },
+            { id: 2, performer: '叶歆玥', type: '钢琴', title: '《小雨莎莎》《送别》', instrument: '独奏' },
+            { id: 3, performer: '肖子杰', type: '钢琴', title: '《十个小印第安人》《捉迷藏》', instrument: '独奏' },
+            { id: 4, performer: '朱凌尧', type: '声乐', title: '《希望你被这个世界爱着》', instrument: '独唱' },
+            { id: 5, performer: '周子悦', type: '钢琴', title: '《蓝精灵之歌》', instrument: '独奏' },
+            { id: 6, performer: '邱邓玥', type: '声乐', title: '《天使的翅膀》', instrument: '独唱' },
+            { id: 7, performer: '合唱团员', type: '合唱', title: '《声声慢》', instrument: '独唱' },
+            { id: 8, performer: '吕沐晗', type: '钢琴', title: '《跃》', instrument: '独奏' },
+            { id: 9, performer: '尤钰彤', type: '器乐', title: '《丰收锣鼓》', instrument: '独奏' },
+            { id: 10, performer: '尤子勋', type: '声乐', title: '《七里香》', instrument: '独唱' },
+            { id: 11, performer: '郑依灵', type: '钢琴', title: '《天空之城》', instrument: '独奏' },
+            { id: 12, performer: '庄靖桐', type: '钢琴', title: '《蓝精灵之歌》', instrument: '独奏' },
+            { id: 13, performer: '张雨乐', type: '器乐', title: '《青花瓷》', instrument: '独奏' }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const programListContainer = document.getElementById('program-list');
+            const filtersContainer = document.getElementById('filters');
+            const music = document.getElementById('bg-music');
+            const musicToggle = document.getElementById('music-toggle');
+            const musicIcon = document.getElementById('music-icon');
+            const musicHint = document.getElementById('music-hint');
+
+            let isPlaying = false;
+
+            // 创建音频上下文以确保播放成功
+            let audioContext;
+            let audioBuffer;
+            let audioSource;
+
+            // 初始化音频系统
+            function initAudio() {
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.log('Web Audio API not supported');
+                }
+            }
+
+            // 音乐播放错误处理
+            music.addEventListener('error', (e) => {
+                console.log('背景音乐加载失败，尝试下一个音源');
+                musicIcon.textContent = '🎵';
+                // 尝试加载备用音频
+                loadBackupAudio();
+            });
+
+            music.addEventListener('loadstart', () => {
+                console.log('开始加载营地主题音乐会背景音乐');
+            });
+
+            music.addEventListener('canplay', () => {
+                console.log('音乐已准备就绪');
+                musicIcon.textContent = '🎵';
+            });
+
+            // 备用音频加载
+            function loadBackupAudio() {
+                console.log('加载备用音频：久石让风格旋律');
+                if (window.createSummerMelody) {
+                    const success = window.createSummerMelody();
+                    if (success) {
+                        musicIcon.textContent = '🎼';
+                        musicToggle.style.backgroundColor = 'rgba(255, 193, 71, 0.8)';
+                        // 每5秒重复播放旋律
+                        setInterval(() => {
+                            if (isPlaying) {
+                                window.createSummerMelody();
+                            }
+                        }, 5000);
+                    }
+                }
+            }
+
+            // 音乐加载和播放管理
+            let musicLoaded = false;
+            
+            function loadMusic() {
+                if (!musicLoaded) {
+                    console.log('开始加载久石让钢琴曲...');
+                    music.load(); // 重新加载音频
+                    musicLoaded = true;
+                }
+            }
+            
+            function playMusic() {
+                loadMusic();
+                return music.play().then(() => {
+                    isPlaying = true;
+                    musicIcon.textContent = '🎶';
+                    musicToggle.style.backgroundColor = 'rgba(63, 167, 150, 0.9)';
+                    musicToggle.style.transform = 'scale(1.1)';
+                    console.log('久石让钢琴曲播放成功');
+                    musicHint.style.display = 'none';
+                }).catch(e => {
+                    console.log('音乐播放失败，尝试备用方案', e);
+                    loadBackupAudio();
+                    throw e;
+                });
+            }
+            
+            // 用户交互启动音乐
+            let hasUserInteracted = false;
+            
+            function setupUserInteraction() {
+                // 监听任何用户交互
+                const startMusic = () => {
+                    if (!hasUserInteracted) {
+                        hasUserInteracted = true;
+                        playMusic().catch(() => {
+                            console.log('首次播放失败');
+                        });
+                    }
+                };
+                
+                document.addEventListener('click', startMusic, { once: true });
+                document.addEventListener('touchstart', startMusic, { once: true });
+                document.addEventListener('keydown', startMusic, { once: true });
+                
+                // 显示友好提示
+                setTimeout(() => {
+                    musicHint.style.display = 'block';
+                    musicHint.textContent = '🎵 点击任意位置播放久石让钢琴曲';
+                }, 2000);
+                
+                // 10秒后如果还没交互，提示点击音乐按钮
+                setTimeout(() => {
+                    if (!hasUserInteracted && musicHint.style.display !== 'none') {
+                        musicHint.textContent = '🎼 点击右下角按钮播放营地音乐';
+                    }
+                }, 10000);
+            }
+            
+            // 页面加载后设置用户交互监听
+            setTimeout(setupUserInteraction, 1000);
+
+            musicToggle.addEventListener('click', async () => {
+                musicHint.style.display = 'none';
+                
+                if (isPlaying) {
+                    music.pause();
+                    musicIcon.textContent = '🎵';
+                    musicToggle.style.backgroundColor = 'rgba(63, 167, 150, 0.5)';
+                    musicToggle.style.transform = 'scale(1)';
+                } else {
+                    try {
+                        // 确保音频上下文已启动
+                        if (audioContext && audioContext.state === 'suspended') {
+                            await audioContext.resume();
+                        }
+                        
+                        await music.play();
+                        musicIcon.textContent = '🎶';
+                        musicToggle.style.backgroundColor = 'rgba(63, 167, 150, 0.9)';
+                        musicToggle.style.transform = 'scale(1.1)';
+                    } catch (e) {
+                        console.log('音乐播放失败：', e);
+                        musicIcon.textContent = '🔇';
+                        musicToggle.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
+                        // 显示错误提示
+                        musicHint.textContent = '音乐播放失败，请检查网络';
+                        musicHint.style.display = 'block';
+                        setTimeout(() => {
+                            musicHint.style.display = 'none';
+                            musicHint.textContent = '点击播放《菊次郎的夏天》';
+                        }, 2000);
+                    }
+                }
+                isPlaying = !isPlaying;
+            });
+
+            // 初始化音频
+            initAudio();
+
+            function renderProgramList(filter = 'all') {
+                programListContainer.innerHTML = '';
+                const filteredData = programData.filter(item => filter === 'all' || item.type === filter);
+                
+                filteredData.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'program-card bg-white border border-gray-200 rounded-lg p-4 flex items-center space-x-4';
+                    card.setAttribute('data-type', item.type);
+
+                    const iconMap = {
+                        '钢琴': '🎹',
+                        '声乐': '🎤',
+                        '合唱': '👨‍👩‍👧‍👦',
+                        '器乐': '🎻',
+                    };
+
+                    card.innerHTML = `
+                        <div class="text-3xl">${iconMap[item.type] || '🎶'}</div>
+                        <div class="flex-grow">
+                            <p class="font-bold text-gray-800">${item.title}</p>
+                            <p class="text-sm text-gray-600">${item.performer} · ${item.instrument}</p>
+                            <div class="program-details hidden mt-2 p-2 bg-gray-50 rounded text-xs text-gray-500">
+                                <p>🎵 演出类型: ${item.type}</p>
+                                <p>⏱️ 预计时长: 3-5分钟</p>
+                                <p>👤 表演者: ${item.performer}</p>
+                            </div>
+                        </div>
+                        <div class="text-lg font-bold text-grass-green w-10 text-right cursor-pointer hover:scale-110 transition-transform">${String(item.id).padStart(2, '0')}</div>
+                    `;
+                    
+                    // 添加点击展开详情功能
+                    card.addEventListener('click', () => {
+                        const details = card.querySelector('.program-details');
+                        if (details.classList.contains('hidden')) {
+                            details.classList.remove('hidden');
+                            card.style.backgroundColor = '#f8fffe';
+                        } else {
+                            details.classList.add('hidden');
+                            card.style.backgroundColor = 'white';
+                        }
+                    });
+                    programListContainer.appendChild(card);
+                });
+            }
+            
+            filtersContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('filter-btn')) {
+                    document.querySelectorAll('.filter-btn').forEach(btn => {
+                        btn.classList.remove('active-filter');
+                        btn.classList.add('inactive-filter');
+                    });
+                    e.target.classList.add('active-filter');
+                    e.target.classList.remove('inactive-filter');
+                    renderProgramList(e.target.dataset.filter);
+                }
+            });
+
+            function startCountdown() {
+                const countdownElement = document.getElementById('countdown');
+                if (!countdownElement) return;
+
+                const targetDate = new Date('2025-10-08T16:30:00').getTime();
+
+                const interval = setInterval(() => {
+                    const now = new Date().getTime();
+                    const distance = targetDate - now;
+
+                    if (distance < 0) {
+                        clearInterval(interval);
+                        countdownElement.innerHTML = "<p>音乐会已开始</p>";
+                        return;
+                    }
+
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    
+                    document.getElementById('days').textContent = String(days).padStart(2, '0');
+                    document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+                    document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                    document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+
+                }, 1000);
+            }
+
+            function setupAnalytics() {
+                const totalPrograms = programData.length;
+                const totalPerformers = 20; // 固定为20人
+                const instrumentalCount = 8; // 器乐8个节目
+                const vocalCount = 5; // 声乐5个节目
+                
+                document.getElementById('total-programs').textContent = totalPrograms;
+                document.getElementById('total-performers').textContent = totalPerformers;
+                document.getElementById('piano-count').textContent = instrumentalCount;
+                document.getElementById('vocal-count').textContent = vocalCount;
+
+                const typeCounts = programData.reduce((acc, curr) => {
+                    acc[curr.type] = (acc[curr.type] || 0) + 1;
+                    return acc;
+                }, {});
+
+                const ctx = document.getElementById('programChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(typeCounts),
+                        datasets: [{
+                            label: '节目类型',
+                            data: Object.values(typeCounts),
+                            backgroundColor: [
+                                '#3FA796', 
+                                '#8FD6D0', 
+                                '#F6AD55', 
+                                '#63B3ED',
+                            ],
+                            borderColor: '#F8F9FA',
+                            borderWidth: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed !== null) {
+                                            label += context.parsed + '个节目';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            renderProgramList();
+            startCountdown();
+            setupAnalytics();
+        });
+    </script>
+</body>
+</html>

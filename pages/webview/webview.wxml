@@ -1,0 +1,18 @@
+<!--pages/webview/webview.wxml-->
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-content">
+      <view class="spinner"></view>
+      <text class="loading-text">正在加载营地音乐会...</text>
+    </view>
+  </view>
+  
+  <!-- WebView组件 -->
+  <web-view 
+    src="{{webUrl}}" 
+    bindload="onWebViewLoad"
+    binderror="onWebViewError"
+    bindmessage="onWebViewMessage">
+  </web-view>
+</view>

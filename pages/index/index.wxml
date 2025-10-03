@@ -1,0 +1,54 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 头部区域 -->
+  <view class="header">
+    <view class="logo">🎵</view>
+    <view class="title">{{concertInfo.title}}</view>
+    <view class="subtitle">{{concertInfo.subtitle}}</view>
+  </view>
+
+  <!-- 音乐会信息 -->
+  <view class="concert-info">
+    <view class="info-item">
+      <view class="info-label">📅 时间</view>
+      <view class="info-value">{{concertInfo.date}}</view>
+    </view>
+    <view class="info-item">
+      <view class="info-label">📍 地点</view>
+      <view class="info-value">{{concertInfo.location}}</view>
+    </view>
+  </view>
+
+  <!-- 功能按钮 -->
+  <view class="actions">
+    <button class="action-btn primary" bindtap="goToConcert">
+      🎼 查看节目单
+    </button>
+    <button class="action-btn" open-type="share">
+      📤 分享音乐会
+    </button>
+  </view>
+
+  <!-- 特色介绍 -->
+  <view class="features">
+    <view class="feature-title">🌟 音乐会特色</view>
+    <view class="feature-list">
+      <view class="feature-item">
+        <view class="feature-icon">🎹</view>
+        <view class="feature-text">久石让钢琴曲背景音乐</view>
+      </view>
+      <view class="feature-item">
+        <view class="feature-icon">📱</view>
+        <view class="feature-text">电子节目单，实时更新</view>
+      </view>
+      <view class="feature-item">
+        <view class="feature-icon">🎨</view>
+        <view class="feature-text">营地主题，简约大气</view>
+      </view>
+      <view class="feature-item">
+        <view class="feature-icon">📊</view>
+        <view class="feature-text">节目统计与智能筛选</view>
+      </view>
+    </view>
+  </view>
+</view>

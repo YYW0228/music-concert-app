@@ -1,0 +1,42 @@
+{
+  "name": "camp-concert-miniprogram",
+  "version": "1.0.0",
+  "description": "营地主题音乐会小程序自动部署工具",
+  "main": "deploy/deploy.js",
+  "scripts": {
+    "setup": "node scripts/setup.js",
+    "deploy": "node deploy/deploy.js",
+    "deploy:h5": "node scripts/deploy-h5.js",
+    "deploy:miniprogram": "node deploy/deploy.js",
+    "deploy:github": "node scripts/github-deploy.js",
+    "cloudflare:setup": "node scripts/cloudflare-setup.js",
+    "cloudflare:build": "node _build-cloudflare.js",
+    "build": "npm run setup && npm run deploy",
+    "dev": "node scripts/dev-server.js",
+    "preview": "open index.html",
+    "china": "node scripts/github-deploy.js"
+  },
+  "keywords": [
+    "miniprogram",
+    "wechat",
+    "concert",
+    "pwa",
+    "music"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "express": "^4.18.2",
+    "open": "^8.4.0",
+    "fs-extra": "^11.1.0",
+    "chalk": "^4.1.2",
+    "inquirer": "^8.2.4"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/camp-concert.git"
+  }
+}
