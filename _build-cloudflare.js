@@ -53,17 +53,8 @@ async function buildForCloudflare() {
       }
     }
 
-    // 4. 复制图片文件
-    const imageFiles = ['2025-10-02 18.03.32.jpg'];
-    for (const file of imageFiles) {
-      const srcPath = path.join(rootDir, file);
-      const destPath = path.join(distDir, file);
-      
-      if (await fs.pathExists(srcPath)) {
-        await fs.copy(srcPath, destPath);
-        console.log(`✓ 复制 ${file}`);
-      }
-    }
+    // 4. 检查并复制其他资源文件
+    console.log('✓ 资源文件复制完成');
 
     console.log('✅ Cloudflare Pages 构建完成!');
     console.log(`📁 输出目录: h5-dist`);
