@@ -1130,6 +1130,85 @@
             setupAnalytics();
         });
     </script>
+    <!-- 🎵 底层重构：音频状态机架构 -->
+    <audio id="bg-audio" style="display: none;">
+        <source src="./static/audio/castle-in-the-sky.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // 🎵 AudioCore - 状态机驱动的音频管理
+        class AudioCore {
+            constructor(elementId) {
+                this.element = document.getElementById(elementId);
+                this.state = 'INIT';
+                this.log('AudioCore starting...');
+                this.setupEventListeners();
+            }
+
+            log(msg) { console.log(`🎵 [AudioCore] ${msg}`); }
+
+            setupEventListeners() {
+                if (!this.element) {
+                    this.log('❌ Audio element not found');
+                    return;
+                }
+
+                this.element.addEventListener('loadedmetadata', () => {
+                    this.log(`✅ Loaded: ${this.element.duration}s`);
+                    this.state = 'READY';
+                });
+
+                this.element.addEventListener('error', (e) => {
+                    this.log(`❌ Error: ${this.element.error?.code}`);
+                    this.state = 'ERROR';
+                });
+
+                this.element.addEventListener('playing', () => {
+                    this.log('✅ Playing');
+                    this.state = 'PLAYING';
+                });
+
+                this.element.addEventListener('ended', () => {
+                    this.log('🔄 Ended, restarting...');
+                    this.element.currentTime = 0;
+                    this.element.play();
+                });
+            }
+
+            async play() {
+                try {
+                    this.element.volume = 0.6;
+                    this.element.loop = true;
+                    await this.element.play();
+                    this.log('🎵 Play initiated');
+                    return true;
+                } catch (e) {
+                    this.log(`❌ Play failed: ${e.message}`);
+                    return false;
+                }
+            }
+
+            debug() {
+                return {
+                    state: this.state,
+                    duration: this.element.duration,
+                    currentTime: this.element.currentTime,
+                    src: this.element.currentSrc
+                };
+            }
+        }
+
+        // 全局音频管理
+        window.audioCore = new AudioCore('bg-audio');
+        window.audioDebug = () => console.table(audioCore.debug());
+
+        // 用户激活
+        document.addEventListener('click', function() {
+            audioCore.play();
+        }, { once: true });
+
+        console.log('🎵 底层重构完成，使用 audioDebug() 查看状态');
+    </script>
 </body>
 </html>
 <!-- Cache-bust: 1759818303 -->
