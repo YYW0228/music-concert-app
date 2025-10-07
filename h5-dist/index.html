@@ -258,7 +258,7 @@
 <body class="bg-green-50 text-gray-800">
     
     <!-- 多首轻快音乐播放列表 -->
-    <audio id="bg-music" preload="metadata" loop>
+    <audio id="bg-music" preload="metadata" loop autoplay muted>
         <!-- 奥芬巴赫 - 卡农舞曲 (主推荐) -->
         <source src="https://cdn.pixabay.com/download/audio/2023/02/22/audio_e3a51c4c7f.mp3?filename=cancan-can-can-by-offenbach-classical-music-for-the-orchestra-9705.mp3" type="audio/mpeg">
         <!-- 备用卡农舞曲版本 -->
@@ -466,14 +466,6 @@
                      class="w-full h-full object-contain rounded-lg"
                      loading="lazy">
             
-    <!-- 备用二维码方案 -->
-    <div class="qr-backup" style="margin-top: 10px;">
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=%E5%BE%AE%E4%BF%A1%E8%81%94%E7%B3%BB%3A%2017365166266%20(%E9%82%93%E8%80%81%E5%B8%88%E5%BE%AE%E4%BF%A1)" 
-             alt="备用联系二维码" 
-             style="width: 160px; height: 160px; border: 2px solid #10b981; border-radius: 8px;"
-             onerror="this.style.display='none'">
-        <p style="font-size: 12px; color: #666; margin-top: 5px;">备用联系方式</p>
-    </div>
         </div>
         </footer>
     </div>
@@ -671,6 +663,20 @@
             // 用户交互启动音乐
             let hasUserInteracted = false;
             
+            // 尝试自动播放（静音开始，用户交互后取消静音）
+            function attemptAutoplay() {
+                music.volume = 0;
+                music.play().then(() => {
+                    console.log('🎵 背景音乐已开始播放（静音状态）');
+                    // 显示提示用户点击取消静音
+                    musicHint.textContent = '🎵 点击任意位置开启奥芬巴赫卡农舞曲';
+                    musicHint.style.display = 'block';
+                }).catch(e => {
+                    console.log('自动播放被阻止，等待用户交互');
+                    setupUserInteraction();
+                });
+            }
+            
             function setupUserInteraction() {
                 // 监听任何用户交互
                 const startMusic = () => {
@@ -701,6 +707,7 @@
             }
             
             // 页面加载后设置用户交互监听
+            attemptAutoplay();
             setTimeout(setupUserInteraction, 1000);
 
             musicToggle.addEventListener('click', async () => {
