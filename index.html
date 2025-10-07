@@ -260,6 +260,28 @@
     
     <!-- 添加备用Web Audio API音频生成 -->
     <script>
+        // 久石让风格背景音乐控制
+        document.addEventListener('DOMContentLoaded', function() {
+            const music = document.getElementById('bg-music');
+            const musicHint = document.getElementById('music-hint');
+            let userInteracted = false;
+            
+            // 用户点击启动音乐
+            document.addEventListener('click', function() {
+                if (!userInteracted && music) {
+                    userInteracted = true;
+                    music.muted = false;
+                    music.volume = 0.6;
+                    music.play().then(() => {
+                        console.log('🎵 久石让钢琴音乐开始播放');
+                        musicHint.style.display = 'none';
+                    }).catch(e => {
+                        console.log('音乐播放失败:', e);
+                    });
+                }
+            });
+        });
+
         // 创建久石让风格的简单旋律
         function createSummerMelody() {
             if (typeof AudioContext !== 'undefined' || typeof webkitAudioContext !== 'undefined') {
