@@ -14,7 +14,9 @@
     "build": "npm run setup && npm run deploy",
     "dev": "node scripts/dev-server.js",
     "preview": "open index.html",
-    "china": "node scripts/github-deploy.js"
+    "china": "node tmp_rovodev_auto_update_data.js",
+    "update": "node tmp_rovodev_auto_update_data.js",
+    "quick-deploy": "./tmp_rovodev_one_click_deploy.sh"
   },
   "keywords": [
     "miniprogram",

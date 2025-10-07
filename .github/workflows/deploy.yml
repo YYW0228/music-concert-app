@@ -1,0 +1,45 @@
+name: 🚀 自动部署到GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 检出代码
+      uses: actions/checkout@v3
+      
+    - name: 📦 设置Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: 📋 安装依赖
+      run: npm install
+      
+    - name: 🏗️ 构建项目
+      run: |
+        npm run deploy:h5 || echo "H5构建跳过"
+        
+    - name: 📂 复制文件到根目录
+      run: |
+        cp h5-dist/*.html . 2>/dev/null || true
+        cp h5-dist/*.json . 2>/dev/null || true  
+        cp h5-dist/*.js . 2>/dev/null || true
+        cp -r h5-dist/static . 2>/dev/null || true
+        
+    - name: 🚀 部署到GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: .
+        exclude_assets: '.github,node_modules,scripts,deploy,pages,tmp_rovodev_*'
+        
+    - name: 📢 部署通知
+      run: |
+        echo "🎉 部署完成！"
+        echo "🌐 访问地址: https://yyw0228.github.io/music-concert-app"
