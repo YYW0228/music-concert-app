@@ -268,19 +268,24 @@
     
     <!-- 添加备用Web Audio API音频生成 -->
     <script>
-        // 极简音乐控制
+        // 久石让风格背景音乐控制
         document.addEventListener('DOMContentLoaded', function() {
-            const audio = document.getElementById('bg-music');
-            const hint = document.getElementById('music-hint');
-            let started = false;
+            const music = document.getElementById('bg-music');
+            const musicHint = document.getElementById('music-hint');
+            let userInteracted = false;
             
+            // 用户点击启动音乐
             document.addEventListener('click', function() {
-                if (!started && audio) {
-                    started = true;
-                    audio.muted = false;
-                    audio.volume = 0.7;
-                    audio.play();
-                    if (hint) hint.style.display = 'none';
+                if (!userInteracted && music) {
+                    userInteracted = true;
+                    music.muted = false;
+                    music.volume = 0.6;
+                    music.play().then(() => {
+                        console.log('🎵 久石让钢琴音乐开始播放');
+                        musicHint.style.display = 'none';
+                    }).catch(e => {
+                        console.log('音乐播放失败:', e);
+                    });
                 }
             });
         });
