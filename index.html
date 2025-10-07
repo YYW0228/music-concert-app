@@ -259,12 +259,10 @@
     
     <!-- 多首轻快音乐播放列表 -->
     <audio id="bg-music" preload="metadata" loop autoplay muted>
-        <!-- 奥芬巴赫 - 卡农舞曲 (主推荐) -->
-        <source src="https://cdn.pixabay.com/download/audio/2023/02/22/audio_e3a51c4c7f.mp3?filename=cancan-can-can-by-offenbach-classical-music-for-the-orchestra-9705.mp3" type="audio/mpeg">
-        <!-- 备用卡农舞曲版本 -->
+        <!-- 奥芬巴赫 - 卡农舞曲 (完整版音频源) -->
         <source src="https://www.soundjay.com/misc/sounds/cancan.mp3" type="audio/mpeg">
-        <!-- 久石让风格备用 -->
-        <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_0d6e3e7ce8.mp3?filename=beautiful-piano-loop-6877.mp3" type="audio/mpeg">
+        <source src="https://freesound.org/data/previews/316/316847_5123451-lq.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=waltz-of-the-flowers-tchaikovsky-the-nutcracker-suite-classical-music-9124.mp3" type="audio/mpeg">
     </audio>
     
     <!-- 添加备用Web Audio API音频生成 -->
@@ -514,25 +512,25 @@
             // 🎵 奥芬巴赫卡农舞曲播放列表
             const musicPlaylist = [
                 {
-                    title: "奥芬巴赫 - 卡农舞曲 (Cancan)",
-                    src: "https://cdn.pixabay.com/download/audio/2023/02/22/audio_e3a51c4c7f.mp3?filename=cancan-can-can-by-offenbach-classical-music-for-the-orchestra-9705.mp3",
+                    title: "奥芬巴赫 - 卡农舞曲 (完整版)",
+                    src: "https://www.soundjay.com/misc/sounds/cancan.mp3",
                     duration: 120,
                     composer: "Jacques Offenbach",
-                    description: "法国作曲家奥芬巴赫的经典作品，充满活力的舞曲"
+                    description: "经典完整版本"
                 },
                 {
-                    title: "奥芬巴赫 - 卡农舞曲 (备用版本)",
-                    src: "https://www.soundjay.com/misc/sounds/cancan.mp3",
+                    title: "奥芬巴赫 - 卡农舞曲 (管弦乐版)",
+                    src: "https://freesound.org/data/previews/316/316847_5123451-lq.mp3",
                     duration: 90,
-                    composer: "Jacques Offenbach",
-                    description: "经典卡农舞曲的高质量版本"
+                    composer: "Jacques Offenbach", 
+                    description: "管弦乐团演奏版本"
                 },
                 {
-                    title: "久石让风格 - 优美钢琴曲(备用)",
-                    src: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_0d6e3e7ce8.mp3?filename=beautiful-piano-loop-6877.mp3",
-                    duration: 15,
-                    composer: "久石让风格",
-                    description: "温柔优美的钢琴旋律，备用选择"
+                    title: "卡农舞曲 - 钢琴版",
+                    src: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=waltz-of-the-flowers-tchaikovsky-the-nutcracker-suite-classical-music-9124.mp3",
+                    duration: 180,
+                    composer: "古典改编",
+                    description: "古典钢琴版本"
                 }
             ];
 
@@ -705,6 +703,19 @@
                     }
                 }, 10000);
             }
+            // 增强循环播放逻辑
+            music.addEventListener('ended', function() {
+                console.log('🎵 音乐播放结束，重新开始循环...');
+                music.currentTime = 0;
+                music.play().catch(e => console.log('循环播放失败:', e));
+            });
+
+            // 确保循环播放
+            music.addEventListener('canplaythrough', function() {
+                if (music.loop) {
+                    console.log('🎵 音乐已准备就绪，支持循环播放');
+                }
+            });
             
             // 页面加载后设置用户交互监听
             attemptAutoplay();
