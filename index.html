@@ -257,11 +257,12 @@
     
     <!-- 多首轻快音乐播放列表 -->
     <audio id="bg-music" preload="metadata">
-        <!-- 主要轻快钢琴曲 -->
+        <!-- 奥芬巴赫 - 卡农舞曲 (主推荐) -->
+        <source src="https://cdn.pixabay.com/download/audio/2023/02/22/audio_e3a51c4c7f.mp3?filename=cancan-can-can-by-offenbach-classical-music-for-the-orchestra-9705.mp3" type="audio/mpeg">
+        <!-- 备用卡农舞曲版本 -->
+        <source src="https://www.soundjay.com/misc/sounds/cancan.mp3" type="audio/mpeg">
+        <!-- 久石让风格备用 -->
         <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_0d6e3e7ce8.mp3?filename=beautiful-piano-loop-6877.mp3" type="audio/mpeg">
-        <!-- 备用轻快音乐 -->
-        <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_4d1b2f3f46.mp3?filename=summer-walk-152722.mp3" type="audio/mpeg">
-        <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_1ab82ce63b.mp3?filename=happy-upbeat-music-114710.mp3" type="audio/mpeg">
     </audio>
     
     <!-- 添加备用Web Audio API音频生成 -->
@@ -351,7 +352,7 @@
     <div id="music-toggle">
         <span id="music-icon">🎵</span>
     </div>
-    <div class="music-hint" id="music-hint">🎵 营地音乐会背景音乐</div>
+    <div class="music-hint" id="music-hint">🎵 奥芬巴赫 - 卡农舞曲 (经典背景音乐)</div>
 
     <div class="container mx-auto max-w-4xl">
 
@@ -507,22 +508,28 @@
                 }
             }
 
-            // 🎵 轻快音乐播放列表
+            // 🎵 奥芬巴赫卡农舞曲播放列表
             const musicPlaylist = [
                 {
-                    title: "轻快钢琴曲 - 春日序曲",
+                    title: "奥芬巴赫 - 卡农舞曲 (Cancan)",
+                    src: "https://cdn.pixabay.com/download/audio/2023/02/22/audio_e3a51c4c7f.mp3?filename=cancan-can-can-by-offenbach-classical-music-for-the-orchestra-9705.mp3",
+                    duration: 120,
+                    composer: "Jacques Offenbach",
+                    description: "法国作曲家奥芬巴赫的经典作品，充满活力的舞曲"
+                },
+                {
+                    title: "奥芬巴赫 - 卡农舞曲 (备用版本)",
+                    src: "https://www.soundjay.com/misc/sounds/cancan.mp3",
+                    duration: 90,
+                    composer: "Jacques Offenbach",
+                    description: "经典卡农舞曲的高质量版本"
+                },
+                {
+                    title: "久石让风格 - 优美钢琴曲(备用)",
                     src: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_0d6e3e7ce8.mp3?filename=beautiful-piano-loop-6877.mp3",
-                    duration: 15
-                },
-                {
-                    title: "愉悦旋律 - 夏日午后", 
-                    src: "https://cdn.pixabay.com/download/audio/2021/08/04/audio_4d1b2f3f46.mp3?filename=summer-walk-152722.mp3",
-                    duration: 15
-                },
-                {
-                    title: "轻松节拍 - 快乐时光",
-                    src: "https://cdn.pixabay.com/download/audio/2022/03/10/audio_1ab82ce63b.mp3?filename=happy-upbeat-music-114710.mp3", 
-                    duration: 15
+                    duration: 15,
+                    composer: "久石让风格",
+                    description: "温柔优美的钢琴旋律，备用选择"
                 }
             ];
 
@@ -582,7 +589,7 @@
             });
 
             music.addEventListener('loadstart', () => {
-                console.log('🎵 加载轻快背景音乐...');
+                console.log('🎵 加载奥芬巴赫卡农舞曲...');
             });
 
             music.addEventListener('canplay', () => {

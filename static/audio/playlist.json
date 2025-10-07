@@ -2,30 +2,38 @@
   "tracks": [
     {
       "id": 1,
-      "title": "轻快钢琴曲 - 春日序曲",
-      "url": "https://cdn.pixabay.com/download/audio/2022/01/18/audio_0d6e3e7ce8.mp3?filename=beautiful-piano-loop-6877.mp3",
-      "duration": 15,
-      "mood": "轻快欢乐"
+      "title": "奥芬巴赫 - 卡农舞曲 (Cancan)",
+      "url": "https://cdn.pixabay.com/download/audio/2023/02/22/audio_e3a51c4c7f.mp3?filename=cancan-can-can-by-offenbach-classical-music-for-the-orchestra-9705.mp3",
+      "duration": 120,
+      "mood": "经典欢快",
+      "composer": "Jacques Offenbach",
+      "description": "法国作曲家奥芬巴赫的经典作品，充满活力的舞曲"
     },
     {
       "id": 2,
-      "title": "愉悦旋律 - 夏日午后",
-      "url": "https://cdn.pixabay.com/download/audio/2021/08/04/audio_4d1b2f3f46.mp3?filename=summer-walk-152722.mp3",
-      "duration": 15,
-      "mood": "清新活泼"
+      "title": "奥芬巴赫 - 卡农舞曲 (备用版本)",
+      "url": "https://www.soundjay.com/misc/sounds/cancan.mp3",
+      "duration": 90,
+      "mood": "经典活泼",
+      "composer": "Jacques Offenbach",
+      "description": "经典卡农舞曲的高质量版本"
     },
     {
       "id": 3,
-      "title": "轻松节拍 - 快乐时光",
-      "url": "https://cdn.pixabay.com/download/audio/2022/03/10/audio_1ab82ce63b.mp3?filename=happy-upbeat-music-114710.mp3",
+      "title": "久石让风格 - 优美钢琴曲(备用)",
+      "url": "https://cdn.pixabay.com/download/audio/2022/01/18/audio_0d6e3e7ce8.mp3?filename=beautiful-piano-loop-6877.mp3",
       "duration": 15,
-      "mood": "积极向上"
+      "mood": "温柔优美",
+      "composer": "久石让风格",
+      "description": "温柔优美的钢琴旋律，备用选择"
     }
   ],
   "settings": {
     "autoPlay": true,
     "loop": true,
     "fadeTransition": true,
-    "volume": 0.7
+    "volume": 0.8,
+    "preferredTrack": 1,
+    "infiniteLoop": true
   }
 }
