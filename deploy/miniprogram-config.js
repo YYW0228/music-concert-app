@@ -5,7 +5,7 @@ module.exports = {
   privateKeyPath: './private.key',
   
   // H5页面部署域名
-  webDomain: 'https://music-concert-app.pages.dev',
+  webDomain: 'https://yyw0228.github.io/music-concert-app',
   
   // 小程序基本信息
   projectConfig: {
@@ -60,7 +60,7 @@ module.exports = {
   
   // 业务域名配置
   webviewDomains: [
-    'https://music-concert-app.pages.dev'  // Cloudflare Pages 域名
+    'https://yyw0228.github.io/music-concert-app'  // Cloudflare Pages 域名
   ],
   
   // 上传配置
