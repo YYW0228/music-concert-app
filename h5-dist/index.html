@@ -256,7 +256,16 @@
     <meta name="build-id" content="1759820721469">
 </head>
 <body class="bg-green-50 text-gray-800">
+    <!-- 久石让风格背景音乐 -->
+    <audio id="bg-music" loop autoplay muted preload="auto">
+        <source src="https://www.bensound.com/bensound-music/bensound-pianomoment.mp3" type="audio/mpeg">
+        <source src="https://www.bensound.com/bensound-music/bensound-memories.mp3" type="audio/mpeg">
+    </audio>
     
+    <!-- 音乐控制提示 -->
+    <div class="music-hint" id="music-hint" style="position: fixed; bottom: 20px; right: 20px; background: rgba(16, 185, 129, 0.9); color: white; padding: 10px 15px; border-radius: 20px; font-size: 14px; display: block; z-index: 1000;">
+        🎵 点击页面开启久石让钢琴音乐
+    </div>
     
     <!-- 添加备用Web Audio API音频生成 -->
     <script>
