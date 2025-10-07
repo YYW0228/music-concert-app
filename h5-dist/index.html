@@ -258,8 +258,11 @@
 <body class="bg-green-50 text-gray-800">
     
     <!-- 多首轻快音乐播放列表 -->
-    <!-- 紧急替代：Web Audio API生成久石让风格音乐 -->
-    <div id="bg-music" style="display: none;">音频生成中...</div>
+    <audio id="bg-music" preload="auto" loop autoplay muted>
+        <!-- 寻找更合适的久石让风格音乐 -->
+        <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_4d1b2f3f46.mp3?filename=summer-walk-152722.mp3" type="audio/mpeg">
+        <p>您的浏览器不支持音频播放。</p>
+    </audio>
     
     <!-- 添加备用Web Audio API音频生成 -->
     <script>
@@ -372,18 +375,16 @@
         document.addEventListener('click', function() {
             if (!userHasInteracted) {
                 userHasInteracted = true;
-                console.log('👆 用户点击，启动久石让风格音乐生成器');
+                console.log('👆 用户点击，尝试播放音频');
                 
-                // 启动生成的音乐
-                if (window.joeHisaishiPlayer) {
-                    window.joeHisaishiPlayer.start();
-                    musicHint.textContent = '🎵 久石让风格音乐正在播放...';
-                    setTimeout(() => {
-                        musicHint.style.display = 'none';
-                    }, 3000);
-                }
-            }
-        });
+                audio.muted = false;
+                audio.volume = 0.7;
+                
+                audio.play().then(() => {
+                    console.log('🎵 音频播放成功！');
+                }).catch(e => {
+                    console.error('❌ 播放失败:', e);
+                });
             }
         });
         
@@ -398,81 +399,6 @@
             console.log('- 网络状态:', audio.networkState);
         }, 2000);
     });
-    
-    // 紧急音频生成器 - 久石让风格钢琴音乐
-    class JoeHisaishiGenerator {
-        constructor() {
-            this.audioContext = null;
-            this.isPlaying = false;
-        }
-
-        createAudioContext() {
-            if (!this.audioContext) {
-                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            return this.audioContext;
-        }
-
-        // 生成久石让风格的简单钢琴旋律
-        playJoeHisaishiStyle() {
-            const ctx = this.createAudioContext();
-            
-            // 久石让风格音符序列 (简化版《千与千寻》风格)
-            const melody = [
-                { freq: 523.25, time: 0.0 },   // C5
-                { freq: 587.33, time: 0.5 },   // D5
-                { freq: 659.25, time: 1.0 },   // E5
-                { freq: 698.46, time: 1.5 },   // F5
-                { freq: 783.99, time: 2.0 },   // G5
-                { freq: 659.25, time: 2.5 },   // E5
-                { freq: 587.33, time: 3.0 },   // D5
-                { freq: 523.25, time: 3.5 },   // C5
-            ];
-
-            melody.forEach(note => {
-                const oscillator = ctx.createOscillator();
-                const gainNode = ctx.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(ctx.destination);
-                
-                oscillator.frequency.setValueAtTime(note.freq, ctx.currentTime + note.time);
-                oscillator.type = 'sine'; // 柔和的正弦波，模拟钢琴音色
-                
-                // 音量包络，模拟钢琴触键
-                gainNode.gain.setValueAtTime(0, ctx.currentTime + note.time);
-                gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + note.time + 0.1);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + note.time + 0.5);
-                
-                oscillator.start(ctx.currentTime + note.time);
-                oscillator.stop(ctx.currentTime + note.time + 0.5);
-            });
-
-            // 4秒后重复播放
-            setTimeout(() => {
-                if (this.isPlaying) {
-                    this.playJoeHisaishiStyle();
-                }
-            }, 4000);
-        }
-
-        start() {
-            this.isPlaying = true;
-            this.playJoeHisaishiStyle();
-            console.log('🎵 久石让风格音乐开始播放...');
-        }
-
-        stop() {
-            this.isPlaying = false;
-            if (this.audioContext) {
-                this.audioContext.close();
-                this.audioContext = null;
-            }
-        }
-    }
-
-    // 全局音频生成器
-    window.joeHisaishiPlayer = new JoeHisaishiGenerator();
     </script>
     <div id="music-toggle">
         <span id="music-icon">🎵</span>
@@ -635,14 +561,14 @@
             }
 
             // 🎵 奥芬巴赫卡农舞曲播放列表
-            // 久石让风格钢琴音乐
+            // 单一音源：温柔背景音乐
             const musicPlaylist = [
                 {
-                    title: "久石让风格 - 优美钢琴旋律",
-                    src: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_0d6e3e7ce8.mp3?filename=beautiful-piano-loop-6877.mp3",
+                    title: "温柔背景音乐 - 夏日漫步",
+                    src: "https://cdn.pixabay.com/download/audio/2021/08/04/audio_4d1b2f3f46.mp3?filename=summer-walk-152722.mp3",
                     duration: 15,
-                    composer: "久石让风格",
-                    description: "温柔优美的钢琴音乐，带有宫崎骏电影配乐的感觉"
+                    composer: "轻音乐",
+                    description: "清新温柔的背景音乐，适合钢琴教育氛围"
                 }
             ];
 
