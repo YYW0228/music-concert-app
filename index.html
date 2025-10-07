@@ -258,11 +258,10 @@
 <body class="bg-green-50 text-gray-800">
     
     <!-- 多首轻快音乐播放列表 -->
-    <audio id="bg-music" preload="metadata" loop autoplay muted>
-        <!-- 奥芬巴赫：地狱加洛普舞曲 - 高质量本地音频 -->
+    <audio id="bg-music" preload="auto" loop controls>
+        <!-- 奥芬巴赫：地狱加洛普舞曲 - HD版 -->
         <source src="./static/audio/offenbach-galop-infernal.mp3" type="audio/mpeg">
-        <!-- 备用在线音源 -->
-        <source src="https://www.soundjay.com/misc/sounds/cancan.mp3" type="audio/mpeg">
+        <p>您的浏览器不支持音频播放。</p>
     </audio>
     
     <!-- 添加备用Web Audio API音频生成 -->
@@ -348,6 +347,58 @@
                 }
             }, 10000);
         }
+    
+    // 音频调试脚本
+    document.addEventListener('DOMContentLoaded', function() {
+        const audio = document.getElementById('bg-music');
+        
+        console.log('🎵 音频元素:', audio);
+        console.log('🎵 音频源:', audio.src || audio.currentSrc);
+        
+        // 详细事件监听
+        audio.addEventListener('loadstart', () => console.log('✅ loadstart - 开始加载'));
+        audio.addEventListener('loadedmetadata', () => console.log('✅ loadedmetadata - 元数据加载完成'));
+        audio.addEventListener('loadeddata', () => console.log('✅ loadeddata - 数据加载完成'));
+        audio.addEventListener('canplay', () => console.log('✅ canplay - 可以播放'));
+        audio.addEventListener('canplaythrough', () => console.log('✅ canplaythrough - 可以完整播放'));
+        audio.addEventListener('play', () => console.log('✅ play - 开始播放'));
+        audio.addEventListener('playing', () => console.log('✅ playing - 正在播放'));
+        audio.addEventListener('pause', () => console.log('⏸️ pause - 暂停'));
+        audio.addEventListener('ended', () => console.log('🔄 ended - 播放结束'));
+        audio.addEventListener('error', (e) => {
+            console.error('❌ 音频错误:', e);
+            console.error('❌ 错误代码:', audio.error?.code, audio.error?.message);
+        });
+        
+        // 添加用户交互播放
+        let userHasInteracted = false;
+        document.addEventListener('click', function() {
+            if (!userHasInteracted) {
+                userHasInteracted = true;
+                console.log('👆 用户点击，尝试播放音频');
+                
+                audio.muted = false;
+                audio.volume = 0.7;
+                
+                audio.play().then(() => {
+                    console.log('🎵 音频播放成功！');
+                }).catch(e => {
+                    console.error('❌ 播放失败:', e);
+                });
+            }
+        });
+        
+        // 显示音频信息
+        setTimeout(() => {
+            console.log('📊 音频状态:');
+            console.log('- 时长:', audio.duration);
+            console.log('- 当前时间:', audio.currentTime);
+            console.log('- 音量:', audio.volume);
+            console.log('- 静音:', audio.muted);
+            console.log('- 准备状态:', audio.readyState);
+            console.log('- 网络状态:', audio.networkState);
+        }, 2000);
+    });
     </script>
     <div id="music-toggle">
         <span id="music-icon">🎵</span>
@@ -510,20 +561,14 @@
             }
 
             // 🎵 奥芬巴赫卡农舞曲播放列表
+            // 只保留HD奥芬巴赫《地狱加洛普舞曲》
             const musicPlaylist = [
                 {
-                    title: "奥芬巴赫：地狱加洛普舞曲 (HD高质量版)",
+                    title: "奥芬巴赫：地狱加洛普舞曲 (HD版)",
                     src: "./static/audio/offenbach-galop-infernal.mp3",
                     duration: 300,
                     composer: "Jacques Offenbach",
-                    description: "来自《天堂与地狱》歌剧的经典舞曲，HD高质量音频"
-                },
-                {
-                    title: "奥芬巴赫 - 卡农舞曲 (备用版)",
-                    src: "https://www.soundjay.com/misc/sounds/cancan.mp3",
-                    duration: 120,
-                    composer: "Jacques Offenbach",
-                    description: "在线备用音源"
+                    description: "HD高质量音频"
                 }
             ];
 

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>音频测试 - 奥芬巴赫《地狱加洛普舞曲》</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f0f0f0; }
+        .test-section { background: white; padding: 20px; margin: 20px 0; border-radius: 10px; }
+        audio { width: 100%; margin: 10px 0; }
+        button { padding: 10px 20px; margin: 5px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .log { background: #f9f9f9; padding: 10px; margin: 10px 0; border-left: 4px solid #10b981; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>🎵 奥芬巴赫音频测试页面</h1>
+    
+    <div class="test-section">
+        <h2>测试1: 基本音频播放</h2>
+        <audio id="test-audio" controls preload="auto">
+            <source src="./static/audio/offenbach-galop-infernal.mp3" type="audio/mpeg">
+            您的浏览器不支持音频播放。
+        </audio>
+        <br>
+        <button onclick="playAudio()">▶️ 播放音频</button>
+        <button onclick="pauseAudio()">⏸️ 暂停音频</button>
+        <button onclick="checkAudioInfo()">ℹ️ 检查音频信息</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>测试2: 文件访问性</h2>
+        <button onclick="testFileAccess()">🔍 测试文件是否可访问</button>
+        <div id="file-test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>调试信息</h2>
+        <div id="debug-log" class="log">点击上方按钮查看调试信息...</div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('test-audio');
+        const debugLog = document.getElementById('debug-log');
+        
+        function log(message) {
+            console.log(message);
+            debugLog.innerHTML += message + '<br>';
+        }
+        
+        function playAudio() {
+            log('🎵 尝试播放音频...');
+            audio.play().then(() => {
+                log('✅ 播放成功！');
+            }).catch(e => {
+                log('❌ 播放失败: ' + e.message);
+            });
+        }
+        
+        function pauseAudio() {
+            audio.pause();
+            log('⏸️ 音频已暂停');
+        }
+        
+        function checkAudioInfo() {
+            log('📊 音频信息:');
+            log('- 源地址: ' + (audio.src || audio.currentSrc));
+            log('- 时长: ' + audio.duration + ' 秒');
+            log('- 当前时间: ' + audio.currentTime + ' 秒');
+            log('- 音量: ' + audio.volume);
+            log('- 准备状态: ' + audio.readyState);
+            log('- 网络状态: ' + audio.networkState);
+        }
+        
+        function testFileAccess() {
+            log('🔍 测试文件访问...');
+            fetch('./static/audio/offenbach-galop-infernal.mp3', {method: 'HEAD'})
+                .then(response => {
+                    if (response.ok) {
+                        log('✅ 文件可访问，大小: ' + response.headers.get('content-length') + ' 字节');
+                        log('✅ 文件类型: ' + response.headers.get('content-type'));
+                    } else {
+                        log('❌ 文件访问失败: ' + response.status);
+                    }
+                })
+                .catch(e => {
+                    log('❌ 网络错误: ' + e.message);
+                });
+        }
+        
+        // 音频事件监听
+        audio.addEventListener('error', (e) => {
+            log('❌ 音频错误: ' + (audio.error?.message || '未知错误'));
+        });
+        
+        audio.addEventListener('loadedmetadata', () => {
+            log('✅ 音频元数据加载完成');
+        });
+        
+        audio.addEventListener('canplay', () => {
+            log('✅ 音频可以播放');
+        });
+    </script>
+</body>
+</html>
