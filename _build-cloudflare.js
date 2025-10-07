@@ -56,7 +56,7 @@ async function buildForCloudflare() {
     // 4. 检查并复制其他资源文件
     console.log('✓ 资源文件复制完成');
 
-    console.log('✅ Cloudflare Pages 构建完成!');
+    console.log('✅ Cloudflare Pages 构建完成! 强制重建时间: 1759820721469');
     console.log(`📁 输出目录: h5-dist`);
 
   } catch (error) {
