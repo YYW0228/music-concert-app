@@ -255,14 +255,13 @@
 </head>
 <body class="bg-green-50 text-gray-800">
     
-    <audio id="bg-music" loop preload="metadata">
-        <!-- 久石让钢琴曲 - 菊次郎的夏天风格 -->
-        <source src="https://cdn.pixabay.com/download/audio/2022/08/04/audio_2dde6b7562.mp3?filename=piano-moment-4.mp3" type="audio/mpeg">
-        <!-- 备用久石让风格钢琴曲 -->
-        <source src="https://www.bensound.com/bensound-music/bensound-pianomoment.mp3" type="audio/mpeg">
-        <source src="https://www.bensound.com/bensound-music/bensound-memories.mp3" type="audio/mpeg">
-        <!-- 最终备用轻音乐 -->
-        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
+    <!-- 多首轻快音乐播放列表 -->
+    <audio id="bg-music" preload="metadata">
+        <!-- 主要轻快钢琴曲 -->
+        <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_0d6e3e7ce8.mp3?filename=beautiful-piano-loop-6877.mp3" type="audio/mpeg">
+        <!-- 备用轻快音乐 -->
+        <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_4d1b2f3f46.mp3?filename=summer-walk-152722.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_1ab82ce63b.mp3?filename=happy-upbeat-music-114710.mp3" type="audio/mpeg">
     </audio>
     
     <!-- 添加备用Web Audio API音频生成 -->
@@ -479,7 +478,7 @@
             { id: 8, performer: '吕沐晗', type: '钢琴', title: '《跃》', instrument: '独奏' },
             { id: 9, performer: '尤钰彤', type: '器乐', title: '《丰收锣鼓》', instrument: '独奏' },
             { id: 10, performer: '尤子勋', type: '声乐', title: '《七里香》', instrument: '独唱' },
-            { id: 11, performer: '郑依灵', type: '钢琴', title: '《天空之城》', instrument: '独奏' },
+            { id: 11, performer: '郑依灵', type: '钢琴', title: '练习曲Op849.No17', instrument: '独奏' },
             { id: 12, performer: '庄靖桐', type: '钢琴', title: '《蓝精灵之歌》', instrument: '独奏' },
             { id: 13, performer: '张雨乐', type: '器乐', title: '《青花瓷》', instrument: '独奏' }
         ];
@@ -508,20 +507,86 @@
                 }
             }
 
+            // 🎵 轻快音乐播放列表
+            const musicPlaylist = [
+                {
+                    title: "轻快钢琴曲 - 春日序曲",
+                    src: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_0d6e3e7ce8.mp3?filename=beautiful-piano-loop-6877.mp3",
+                    duration: 15
+                },
+                {
+                    title: "愉悦旋律 - 夏日午后", 
+                    src: "https://cdn.pixabay.com/download/audio/2021/08/04/audio_4d1b2f3f46.mp3?filename=summer-walk-152722.mp3",
+                    duration: 15
+                },
+                {
+                    title: "轻松节拍 - 快乐时光",
+                    src: "https://cdn.pixabay.com/download/audio/2022/03/10/audio_1ab82ce63b.mp3?filename=happy-upbeat-music-114710.mp3", 
+                    duration: 15
+                }
+            ];
+
+            let currentTrackIndex = 0;
+            let trackSwitchTimer;
+
+            // 智能音频轮播管理器
+            function switchToNextTrack() {
+                currentTrackIndex = (currentTrackIndex + 1) % musicPlaylist.length;
+                const currentTrack = musicPlaylist[currentTrackIndex];
+                
+                console.log(`🎶 切换到: ${currentTrack.title}`);
+                
+                // 淡出当前音频
+                music.volume = 0.7;
+                const fadeOut = setInterval(() => {
+                    if (music.volume > 0.1) {
+                        music.volume -= 0.1;
+                    } else {
+                        clearInterval(fadeOut);
+                        
+                        // 切换音频源
+                        music.src = currentTrack.src;
+                        music.load();
+                        
+                        // 淡入新音频
+                        music.volume = 0;
+                        music.play().then(() => {
+                            const fadeIn = setInterval(() => {
+                                if (music.volume < 0.6) {
+                                    music.volume += 0.1;
+                                } else {
+                                    clearInterval(fadeIn);
+                                    music.volume = 0.7;
+                                }
+                            }, 100);
+                            
+                            // 更新音乐提示
+                            musicHint.textContent = `🎵 ${currentTrack.title}`;
+                            musicHint.style.display = 'block';
+                            setTimeout(() => {
+                                musicHint.style.display = 'none';
+                            }, 3000);
+                            
+                            // 设置下次切换
+                            clearTimeout(trackSwitchTimer);
+                            trackSwitchTimer = setTimeout(switchToNextTrack, currentTrack.duration * 1000);
+                        });
+                    }
+                }, 100);
+            }
+
             // 音乐播放错误处理
             music.addEventListener('error', (e) => {
-                console.log('背景音乐加载失败，尝试下一个音源');
-                musicIcon.textContent = '🎵';
-                // 尝试加载备用音频
-                loadBackupAudio();
+                console.log('当前音源加载失败，切换到下一首');
+                switchToNextTrack();
             });
 
             music.addEventListener('loadstart', () => {
-                console.log('开始加载营地主题音乐会背景音乐');
+                console.log('🎵 加载轻快背景音乐...');
             });
 
             music.addEventListener('canplay', () => {
-                console.log('音乐已准备就绪');
+                console.log('✅ 音乐已准备就绪');
                 musicIcon.textContent = '🎵';
             });
 
@@ -556,13 +621,28 @@
             
             function playMusic() {
                 loadMusic();
+                // 设置第一首音乐
+                const firstTrack = musicPlaylist[currentTrackIndex];
+                music.src = firstTrack.src;
+                music.volume = 0.7;
+                
                 return music.play().then(() => {
                     isPlaying = true;
                     musicIcon.textContent = '🎶';
                     musicToggle.style.backgroundColor = 'rgba(63, 167, 150, 0.9)';
                     musicToggle.style.transform = 'scale(1.1)';
-                    console.log('久石让钢琴曲播放成功');
-                    musicHint.style.display = 'none';
+                    console.log(`🎵 开始播放轻快音乐: ${firstTrack.title}`);
+                    
+                    // 显示当前播放信息
+                    musicHint.textContent = `🎵 ${firstTrack.title}`;
+                    musicHint.style.display = 'block';
+                    setTimeout(() => {
+                        musicHint.style.display = 'none';
+                    }, 3000);
+                    
+                    // 启动轮播机制
+                    clearTimeout(trackSwitchTimer);
+                    trackSwitchTimer = setTimeout(switchToNextTrack, firstTrack.duration * 1000);
                 }).catch(e => {
                     console.log('音乐播放失败，尝试备用方案', e);
                     loadBackupAudio();

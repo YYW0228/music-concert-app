@@ -1,0 +1,31 @@
+{
+  "tracks": [
+    {
+      "id": 1,
+      "title": "轻快钢琴曲 - 春日序曲",
+      "url": "https://cdn.pixabay.com/download/audio/2022/01/18/audio_0d6e3e7ce8.mp3?filename=beautiful-piano-loop-6877.mp3",
+      "duration": 15,
+      "mood": "轻快欢乐"
+    },
+    {
+      "id": 2,
+      "title": "愉悦旋律 - 夏日午后",
+      "url": "https://cdn.pixabay.com/download/audio/2021/08/04/audio_4d1b2f3f46.mp3?filename=summer-walk-152722.mp3",
+      "duration": 15,
+      "mood": "清新活泼"
+    },
+    {
+      "id": 3,
+      "title": "轻松节拍 - 快乐时光",
+      "url": "https://cdn.pixabay.com/download/audio/2022/03/10/audio_1ab82ce63b.mp3?filename=happy-upbeat-music-114710.mp3",
+      "duration": 15,
+      "mood": "积极向上"
+    }
+  ],
+  "settings": {
+    "autoPlay": true,
+    "loop": true,
+    "fadeTransition": true,
+    "volume": 0.7
+  }
+}
