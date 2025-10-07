@@ -256,7 +256,7 @@
     <meta name="build-id" content="1759820721469">
 </head>
 <body class="bg-green-50 text-gray-800">
-    <!-- 你的《天空之城》钢琴曲 -->
+    <!-- 正确版本的音乐配置 -->
     <audio id="bg-music" loop autoplay muted preload="auto">
         <source src="./static/audio/castle-in-the-sky.mp3" type="audio/mpeg">
     </audio>
@@ -268,7 +268,7 @@
     
     <!-- 添加备用Web Audio API音频生成 -->
     <script>
-        // 极简音乐控制
+        // 正确版本的音乐控制 - 从工作版本复制
         document.addEventListener('DOMContentLoaded', function() {
             const audio = document.getElementById('bg-music');
             const hint = document.getElementById('music-hint');
@@ -279,9 +279,19 @@
                     started = true;
                     audio.muted = false;
                     audio.volume = 0.7;
-                    audio.play();
-                    if (hint) hint.style.display = 'none';
+                    audio.play().then(() => {
+                        console.log('🎵 音乐播放成功');
+                        if (hint) hint.style.display = 'none';
+                    }).catch(e => {
+                        console.log('音乐播放失败:', e);
+                    });
                 }
+            });
+            
+            // 确保循环播放
+            audio.addEventListener('ended', function() {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log('循环播放失败:', e));
             });
         });
 
