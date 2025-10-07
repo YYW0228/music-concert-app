@@ -259,10 +259,10 @@
     
     <!-- 多首轻快音乐播放列表 -->
     <audio id="bg-music" preload="metadata" loop autoplay muted>
-        <!-- 奥芬巴赫 - 卡农舞曲 (完整版音频源) -->
+        <!-- 奥芬巴赫：地狱加洛普舞曲 - 高质量本地音频 -->
+        <source src="./static/audio/offenbach-galop-infernal.mp3" type="audio/mpeg">
+        <!-- 备用在线音源 -->
         <source src="https://www.soundjay.com/misc/sounds/cancan.mp3" type="audio/mpeg">
-        <source src="https://freesound.org/data/previews/316/316847_5123451-lq.mp3" type="audio/mpeg">
-        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=waltz-of-the-flowers-tchaikovsky-the-nutcracker-suite-classical-music-9124.mp3" type="audio/mpeg">
     </audio>
     
     <!-- 添加备用Web Audio API音频生成 -->
@@ -352,7 +352,7 @@
     <div id="music-toggle">
         <span id="music-icon">🎵</span>
     </div>
-    <div class="music-hint" id="music-hint">🎵 奥芬巴赫 - 卡农舞曲 (经典背景音乐)</div>
+    <div class="music-hint" id="music-hint">🎵 奥芬巴赫：地狱加洛普舞曲 (HD高质量背景音乐)</div>
 
     <div class="container mx-auto max-w-4xl">
 
@@ -512,25 +512,18 @@
             // 🎵 奥芬巴赫卡农舞曲播放列表
             const musicPlaylist = [
                 {
-                    title: "奥芬巴赫 - 卡农舞曲 (完整版)",
+                    title: "奥芬巴赫：地狱加洛普舞曲 (HD高质量版)",
+                    src: "./static/audio/offenbach-galop-infernal.mp3",
+                    duration: 300,
+                    composer: "Jacques Offenbach",
+                    description: "来自《天堂与地狱》歌剧的经典舞曲，HD高质量音频"
+                },
+                {
+                    title: "奥芬巴赫 - 卡农舞曲 (备用版)",
                     src: "https://www.soundjay.com/misc/sounds/cancan.mp3",
                     duration: 120,
                     composer: "Jacques Offenbach",
-                    description: "经典完整版本"
-                },
-                {
-                    title: "奥芬巴赫 - 卡农舞曲 (管弦乐版)",
-                    src: "https://freesound.org/data/previews/316/316847_5123451-lq.mp3",
-                    duration: 90,
-                    composer: "Jacques Offenbach", 
-                    description: "管弦乐团演奏版本"
-                },
-                {
-                    title: "卡农舞曲 - 钢琴版",
-                    src: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=waltz-of-the-flowers-tchaikovsky-the-nutcracker-suite-classical-music-9124.mp3",
-                    duration: 180,
-                    composer: "古典改编",
-                    description: "古典钢琴版本"
+                    description: "在线备用音源"
                 }
             ];
 
