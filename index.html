@@ -259,10 +259,8 @@
     
     <!-- 多首轻快音乐播放列表 -->
     <audio id="bg-music" preload="auto" loop autoplay muted>
-        <!-- 久石让风格 - 温柔优美钢琴曲 -->
-        <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_0d6e3e7ce8.mp3?filename=beautiful-piano-loop-6877.mp3" type="audio/mpeg">
-        <!-- HD奥芬巴赫备用（如需要更换回来） -->
-        <source src="./static/audio/offenbach-galop-infernal.mp3" type="audio/mpeg">
+        <!-- 寻找更合适的久石让风格音乐 -->
+        <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_4d1b2f3f46.mp3?filename=summer-walk-152722.mp3" type="audio/mpeg">
         <p>您的浏览器不支持音频播放。</p>
     </audio>
     
@@ -405,7 +403,7 @@
     <div id="music-toggle">
         <span id="music-icon">🎵</span>
     </div>
-    <div class="music-hint" id="music-hint" style="display: block; background: rgba(16, 185, 129, 0.9); color: white; padding: 12px 20px; border-radius: 25px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); animation: pulse 2s infinite;">🎵 点击页面任意位置开启久石让风格温柔钢琴音乐</div>
+    <div class="music-hint" id="music-hint" style="display: block; background: rgba(16, 185, 129, 0.9); color: white; padding: 12px 20px; border-radius: 25px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); animation: pulse 2s infinite;">🎵 点击页面任意位置开启温柔背景音乐</div>
 
     <div class="container mx-auto max-w-4xl">
 
@@ -563,21 +561,14 @@
             }
 
             // 🎵 奥芬巴赫卡农舞曲播放列表
-            // 久石让风格温柔钢琴曲为主
+            // 单一音源：温柔背景音乐
             const musicPlaylist = [
                 {
-                    title: "久石让风格 - 温柔钢琴曲",
-                    src: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_0d6e3e7ce8.mp3?filename=beautiful-piano-loop-6877.mp3",
+                    title: "温柔背景音乐 - 夏日漫步",
+                    src: "https://cdn.pixabay.com/download/audio/2021/08/04/audio_4d1b2f3f46.mp3?filename=summer-walk-152722.mp3",
                     duration: 15,
-                    composer: "久石让风格",
-                    description: "温柔优美的钢琴旋律，适合背景播放"
-                },
-                {
-                    title: "奥芬巴赫：地狱加洛普舞曲 (备用)",
-                    src: "./static/audio/offenbach-galop-infernal.mp3",
-                    duration: 300,
-                    composer: "Jacques Offenbach",
-                    description: "HD版本，较为激烈"
+                    composer: "轻音乐",
+                    description: "清新温柔的背景音乐，适合钢琴教育氛围"
                 }
             ];
 
