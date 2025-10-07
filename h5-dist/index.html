@@ -352,7 +352,7 @@
     <div id="music-toggle">
         <span id="music-icon">🎵</span>
     </div>
-    <div class="music-hint" id="music-hint">🎵 奥芬巴赫：地狱加洛普舞曲 (HD高质量背景音乐)</div>
+    <div class="music-hint" id="music-hint" style="display: block; background: rgba(16, 185, 129, 0.9); color: white; padding: 12px 20px; border-radius: 25px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); animation: pulse 2s infinite;">🎵 点击页面任意位置开启奥芬巴赫《地狱加洛普舞曲》HD音乐</div>
 
     <div class="container mx-auto max-w-4xl">
 
@@ -660,10 +660,12 @@
                 music.play().then(() => {
                     console.log('🎵 背景音乐已开始播放（静音状态）');
                     // 显示提示用户点击取消静音
-                    musicHint.textContent = '🎵 点击任意位置开启奥芬巴赫卡农舞曲';
+                    musicHint.textContent = '🎵 点击页面任意位置开启奥芬巴赫《地狱加洛普舞曲》HD音乐';
                     musicHint.style.display = 'block';
                 }).catch(e => {
                     console.log('自动播放被阻止，等待用户交互');
+                    musicHint.textContent = '🎵 浏览器已阻止自动播放，请点击页面任意位置开启音乐';
+                    musicHint.style.display = 'block';
                     setupUserInteraction();
                 });
             }
