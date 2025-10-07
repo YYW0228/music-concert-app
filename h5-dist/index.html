@@ -257,12 +257,10 @@
 </head>
 <body class="bg-green-50 text-gray-800">
     
-    <!-- 久石让钢琴曲 - 菊次郎的夏天风格 -->
+    <!-- 久石让《天空之城》钢琴曲 - 助眠纯音乐钢琴独奏 -->
     <audio id="bg-music" preload="auto" loop autoplay muted>
-        <!-- 久石让钢琴曲 - 菊次郎的夏天风格 -->
-        <source src="https://www.bensound.com/bensound-music/bensound-pianomoment.mp3" type="audio/mpeg">
-        <!-- 备用久石让风格钢琴曲 -->
-        <source src="https://www.bensound.com/bensound-music/bensound-memories.mp3" type="audio/mpeg">
+        <!-- 久石让《天空之城》钢琴曲 - 本地高质量音频 -->
+        <source src="./static/audio/tenkuu-no-shiro-piano.mp3" type="audio/mpeg">
         <p>您的浏览器不支持音频播放。</p>
     </audio>
     
@@ -401,6 +399,157 @@
             console.log('- 网络状态:', audio.networkState);
         }, 2000);
     });
+    
+    // 🔧 高级音频调试系统
+    class AudioDebugger {
+        constructor() {
+            this.audio = document.getElementById('bg-music');
+            this.debugInfo = [];
+            this.setupDetailedLogging();
+        }
+
+        setupDetailedLogging() {
+            if (!this.audio) {
+                this.log('❌ CRITICAL: audio元素未找到!', 'error');
+                return;
+            }
+
+            // 所有可能的音频事件
+            const events = [
+                'loadstart', 'durationchange', 'loadedmetadata', 'loadeddata',
+                'progress', 'canplay', 'canplaythrough', 'play', 'playing',
+                'pause', 'waiting', 'seeking', 'seeked', 'ended', 'error',
+                'timeupdate', 'volumechange', 'ratechange', 'suspend', 'abort',
+                'emptied', 'stalled'
+            ];
+
+            events.forEach(event => {
+                this.audio.addEventListener(event, (e) => {
+                    this.log(`✅ 音频事件: ${event}`, 'info');
+                    if (event === 'error') {
+                        this.debugError();
+                    }
+                    if (event === 'loadedmetadata') {
+                        this.debugMetadata();
+                    }
+                    if (event === 'canplay') {
+                        this.debugPlayability();
+                    }
+                });
+            });
+
+            // 定期状态检查
+            setInterval(() => {
+                this.debugCurrentState();
+            }, 5000);
+        }
+
+        debugError() {
+            const error = this.audio.error;
+            if (error) {
+                this.log(`❌ 音频错误代码: ${error.code}`, 'error');
+                this.log(`❌ 错误信息: ${error.message || '未知错误'}`, 'error');
+                
+                const errorMessages = {
+                    1: 'MEDIA_ERR_ABORTED - 用户中止',
+                    2: 'MEDIA_ERR_NETWORK - 网络错误',  
+                    3: 'MEDIA_ERR_DECODE - 解码错误',
+                    4: 'MEDIA_ERR_SRC_NOT_SUPPORTED - 不支持的音频格式'
+                };
+                
+                this.log(`❌ 详细说明: ${errorMessages[error.code] || '未知错误类型'}`, 'error');
+            }
+        }
+
+        debugMetadata() {
+            this.log(`📊 音频时长: ${this.audio.duration} 秒`, 'info');
+            this.log(`📊 当前源: ${this.audio.currentSrc}`, 'info');
+            this.log(`📊 网络状态: ${this.audio.networkState}`, 'info');
+            this.log(`📊 准备状态: ${this.audio.readyState}`, 'info');
+        }
+
+        debugPlayability() {
+            this.log(`🎵 可播放状态确认`, 'success');
+            this.log(`🎵 缓冲时间范围: ${this.getBufferedRanges()}`, 'info');
+        }
+
+        debugCurrentState() {
+            if (this.audio.paused) {
+                this.log(`⏸️ 当前状态: 暂停 (时间: ${this.audio.currentTime}s)`, 'warning');
+            } else {
+                this.log(`▶️ 当前状态: 播放中 (时间: ${this.audio.currentTime}s)`, 'success');
+            }
+        }
+
+        getBufferedRanges() {
+            const buffered = this.audio.buffered;
+            const ranges = [];
+            for (let i = 0; i < buffered.length; i++) {
+                ranges.push(`[${buffered.start(i).toFixed(1)}-${buffered.end(i).toFixed(1)}]`);
+            }
+            return ranges.join(', ') || '无缓冲';
+        }
+
+        log(message, type = 'info') {
+            const colors = {
+                info: 'color: #06b6d4',
+                success: 'color: #10b981', 
+                warning: 'color: #f59e0b',
+                error: 'color: #ef4444'
+            };
+            console.log(`%c${message}`, colors[type]);
+            this.debugInfo.push({
+                timestamp: new Date().toLocaleTimeString(),
+                message: message,
+                type: type
+            });
+        }
+
+        manualTest() {
+            this.log('🔧 手动测试开始...', 'info');
+            
+            if (this.audio.paused) {
+                this.audio.play().then(() => {
+                    this.log('✅ 手动播放成功!', 'success');
+                }).catch(e => {
+                    this.log(`❌ 手动播放失败: ${e.message}`, 'error');
+                });
+            } else {
+                this.log('🎵 音频已在播放中', 'info');
+            }
+        }
+
+        getDebugReport() {
+            return {
+                audioElement: !!this.audio,
+                currentSrc: this.audio?.currentSrc,
+                duration: this.audio?.duration,
+                currentTime: this.audio?.currentTime,
+                paused: this.audio?.paused,
+                muted: this.audio?.muted,
+                volume: this.audio?.volume,
+                readyState: this.audio?.readyState,
+                networkState: this.audio?.networkState,
+                error: this.audio?.error,
+                debugLog: this.debugInfo.slice(-10) // 最近10条日志
+            };
+        }
+    }
+
+    // 全局调试器
+    window.audioDebugger = new AudioDebugger();
+
+    // 添加手动测试按钮（开发时使用）
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        const debugBtn = document.createElement('button');
+        debugBtn.textContent = '🔧 音频调试';
+        debugBtn.style.cssText = 'position:fixed;top:10px;right:10px;z-index:9999;padding:10px;background:#ef4444;color:white;border:none;border-radius:5px;cursor:pointer;';
+        debugBtn.onclick = () => {
+            window.audioDebugger.manualTest();
+            console.log('📊 调试报告:', window.audioDebugger.getDebugReport());
+        };
+        document.body.appendChild(debugBtn);
+    }
     </script>
     <div id="music-toggle">
         <span id="music-icon">🎵</span>
@@ -563,14 +712,14 @@
             }
 
             // 🎵 奥芬巴赫卡农舞曲播放列表
-            // 🎵 找到了！久石让钢琴曲 - 菊次郎的夏天风格
+            // 🎵 久石让《天空之城》钢琴曲 - 助眠纯音乐钢琴独奏
             const musicPlaylist = [
                 {
-                    title: "久石让钢琴曲 - 菊次郎的夏天风格", 
-                    src: "https://www.bensound.com/bensound-music/bensound-pianomoment.mp3",
+                    title: "久石让《天空之城》钢琴曲", 
+                    src: "./static/audio/tenkuu-no-shiro-piano.mp3",
                     duration: "完整版",
-                    composer: "久石让风格",
-                    description: "菊次郎的夏天风格钢琴曲，温柔而深刻"
+                    composer: "久石让",
+                    description: "《天空之城》钢琴曲 - 助眠纯音乐钢琴独奏 absolute music solo"
                 }
             ];
 
