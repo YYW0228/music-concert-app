@@ -1,0 +1,48 @@
+<!-- Kernel Style: 单一职责音频系统 -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>内核级音频修复</title>
+</head>
+<body>
+    <!-- 单一音频元素 - 无冲突 -->
+    <audio id="bg-music" loop>
+        <source src="./static/audio/castle-in-the-sky.mp3" type="audio/mpeg">
+    </audio>
+    
+    <button onclick="audioDriver.play()">播放</button>
+    <button onclick="audioDriver.pause()">暂停</button>
+    
+    <script>
+        // Kernel Style: 单一音频驱动系统
+        const audioDriver = {
+            element: document.getElementById('bg-music'),
+            state: 'stopped',
+            
+            play() {
+                if (this.state === 'playing') return;
+                this.element.volume = 0.7;
+                this.element.play().then(() => {
+                    this.state = 'playing';
+                    console.log('✅ Audio driver: play success');
+                }).catch(e => {
+                    console.log('❌ Audio driver: play failed', e);
+                });
+            },
+            
+            pause() {
+                this.element.pause();
+                this.state = 'stopped';
+                console.log('⏸️ Audio driver: paused');
+            }
+        };
+        
+        // 用户交互启动
+        document.addEventListener('click', function once() {
+            audioDriver.play();
+            document.removeEventListener('click', once);
+        }, { once: true });
+    </script>
+</body>
+</html>
