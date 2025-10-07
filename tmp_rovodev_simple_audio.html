@@ -1,0 +1,71 @@
+<!-- 简化的音频测试页面 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音频测试</title>
+</head>
+<body>
+    <h1>🎵 简化音频测试</h1>
+    
+    <!-- 极简音频配置 -->
+    <audio id="bg-music" controls>
+        <source src="./static/audio/tenkuu-no-shiro-piano.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+    
+    <br><br>
+    <button onclick="testAudio()">🔧 测试播放</button>
+    <button onclick="checkAudioInfo()">📊 检查音频信息</button>
+    
+    <div id="debug-info" style="margin-top: 20px; background: #f0f0f0; padding: 10px; border-radius: 5px;"></div>
+    
+    <script>
+        const audio = document.getElementById('bg-music');
+        const debugDiv = document.getElementById('debug-info');
+        
+        function log(message) {
+            console.log(message);
+            debugDiv.innerHTML += message + '<br>';
+        }
+        
+        function testAudio() {
+            log('🔧 开始测试音频播放...');
+            
+            audio.play().then(() => {
+                log('✅ 音频播放成功！');
+            }).catch(e => {
+                log('❌ 音频播放失败: ' + e.message);
+            });
+        }
+        
+        function checkAudioInfo() {
+            log('📊 音频信息检查:');
+            log('- 音频元素: ' + (audio ? '存在' : '不存在'));
+            log('- 当前源: ' + (audio.currentSrc || audio.src || '无'));
+            log('- 时长: ' + audio.duration + ' 秒');
+            log('- 当前时间: ' + audio.currentTime + ' 秒');
+            log('- 音量: ' + audio.volume);
+            log('- 静音: ' + audio.muted);
+            log('- 准备状态: ' + audio.readyState);
+            log('- 网络状态: ' + audio.networkState);
+            log('- 错误: ' + (audio.error ? audio.error.code + ':' + audio.error.message : '无'));
+        }
+        
+        // 音频事件监听
+        audio.addEventListener('loadstart', () => log('✅ loadstart - 开始加载'));
+        audio.addEventListener('loadedmetadata', () => log('✅ loadedmetadata - 元数据加载完成'));
+        audio.addEventListener('canplay', () => log('✅ canplay - 可以播放'));
+        audio.addEventListener('error', (e) => {
+            log('❌ 音频错误: ' + (audio.error?.code || '未知') + ' - ' + (audio.error?.message || '无详细信息'));
+        });
+        
+        // 自动检查
+        setTimeout(() => {
+            log('🔍 页面加载完成，自动检查音频状态:');
+            checkAudioInfo();
+        }, 1000);
+    </script>
+</body>
+</html>
