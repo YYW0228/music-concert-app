@@ -257,9 +257,14 @@
 </head>
 <body class="bg-green-50 text-gray-800">
     
-    <!-- 极简音频配置 -->
-    <audio id="bg-music" loop controls>
-        <source src="./static/audio/castle-in-the-sky.mp3" type="audio/mpeg">
+    <audio id="bg-music" loop preload="metadata">
+        <!-- 久石让钢琴曲 - 菊次郎的夏天风格 -->
+        <source src="https://cdn.pixabay.com/download/audio/2022/08/04/audio_2dde6b7562.mp3?filename=piano-moment-4.mp3" type="audio/mpeg">
+        <!-- 备用久石让风格钢琴曲 -->
+        <source src="https://www.bensound.com/bensound-music/bensound-pianomoment.mp3" type="audio/mpeg">
+        <source src="https://www.bensound.com/bensound-music/bensound-memories.mp3" type="audio/mpeg">
+        <!-- 最终备用轻音乐 -->
+        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
     </audio>
     
     <!-- 添加备用Web Audio API音频生成 -->
